@@ -1,5 +1,12 @@
 # Fieldbook Session Log
 
+## 2026-08-01 - Local source workspace rebuilt
+
+- Change: Replaced the thin source-text demo with an actual browser-local intake workspace supporting multiple PDFs, DOCX files, and common text formats; added a project dossier, source inventory, evidence/assumption/test frame, and safer Skill Pack export.
+- Evidence: `npm run build` passes after adding local PDF and DOCX extraction dependencies.
+- Blocker: Browser/device memory remains the honest practical bound for local files; no arbitrary Fieldbook file limit is imposed.
+- Next: Conduct a usability pass with a real permitted PDF and decide whether to introduce a private hosted synthesis service.
+
 ## 2026-08-01 - MVP verified and private remote connected
 
 - Change: Verified the local production build and connected the project to private GitHub repository `jaehugh/Fieldbook`.

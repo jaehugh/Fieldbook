@@ -4,11 +4,12 @@ Private operating guides made from sources the user has the right to use.
 
 ## What this MVP does
 
-1. Accepts a project idea and permitted source text in a locally runnable browser experience.
-2. Produces a clearly bounded draft: source signal, assumption, and next experiment.
-3. Generates a readable, editable, downloadable `SKILL.md` Skill Pack for agentic coding environments.
+1. Accepts multiple local PDF, DOCX, TXT, Markdown, CSV, JSON, HTML, and RTF source files, extracts their readable text in the browser, and shows a source inventory.
+2. Captures a project dossier: desired outcome, audience, problem, current stage, constraints, and operating context.
+3. Produces a clearly bounded draft: source signal, assumption, and next experiment.
+4. Generates a readable, editable, downloadable `SKILL.md` Skill Pack for agentic coding environments.
 
-The MVP is intentionally local and client-side: source text remains in the browser unless the user chooses to export it. It has no accounts, uploads, database, analytics, external AI call, market-research call, or audio-provider connection.
+The MVP is intentionally local and client-side: source text remains in the browser unless the user chooses to export it. Fieldbook does not impose its own file-count or file-size setting; practical capacity is determined by the user's browser and device memory. It has no accounts, server uploads, database, analytics, external AI call, market-research call, or audio-provider connection.
 
 ## Local use
 

@@ -1,61 +1,90 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { ChangeEvent, useMemo, useRef, useState } from "react";
+import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
+import mammoth from "mammoth";
 
-const starterSource = `Paste a short excerpt, notes, transcript, or a link summary here.\n\nExample: Customers delay decisions when the next step is unclear. Make each test small enough to run this week, and define the evidence that would change your mind.`;
+if (typeof window !== "undefined") {
+  GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
+}
 
-function safeName(value: string) {
-  return (value.toLowerCase().match(/[a-z0-9]+/g)?.join("-") || "fieldbook-skill");
+type Source = { id: string; name: string; type: string; size: number; text: string; status: "ready" | "reading" | "unsupported" | "error" };
+type Brief = { name: string; outcome: string; audience: string; problem: string; context: string; constraints: string; stage: string };
+
+const initialBrief: Brief = { name: "", outcome: "", audience: "", problem: "", context: "", constraints: "", stage: "Exploring" };
+const textTypes = [".txt", ".md", ".markdown", ".csv", ".json", ".html", ".htm", ".rtf"];
+const formatBytes = (bytes: number) => bytes < 1_000_000 ? `${Math.round(bytes / 1024)} KB` : `${(bytes / 1_000_000).toFixed(1)} MB`;
+const slug = (value: string) => value.toLowerCase().match(/[a-z0-9]+/g)?.join("-") || "fieldbook-skill";
+
+async function extract(file: File): Promise<Pick<Source, "text" | "status">> {
+  const name = file.name.toLowerCase();
+  if (name.endsWith(".pdf")) {
+    const pdf = await getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+    const pages = await Promise.all(Array.from({ length: pdf.numPages }, async (_, index) => {
+      const content = await pdf.getPage(index + 1).then(page => page.getTextContent());
+      return content.items.map(item => "str" in item ? item.str : "").join(" ");
+    }));
+    return { text: pages.join("\n\n"), status: "ready" };
+  }
+  if (name.endsWith(".docx")) return { text: (await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() })).value, status: "ready" };
+  if (textTypes.some(extension => name.endsWith(extension))) return { text: await file.text(), status: "ready" };
+  return { text: "", status: "unsupported" };
 }
 
 export default function Home() {
-  const [project, setProject] = useState("Neighborhood Renewal Studio");
-  const [source, setSource] = useState(starterSource);
+  const [brief, setBrief] = useState<Brief>(initialBrief);
+  const [sources, setSources] = useState<Source[]>([]);
+  const [notes, setNotes] = useState("");
   const [generated, setGenerated] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [message, setMessage] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const name = brief.name.trim() || "Untitled project";
+  const readySources = sources.filter(source => source.status === "ready");
+  const hasInput = readySources.length > 0 || notes.trim().length > 0;
 
-  const title = project.trim() || "Untitled venture";
-  const skill = useMemo(() => `---\nname: ${safeName(title)}\ndescription: Apply the private ${title} fieldbook when shaping decisions, experiments, and next actions.\n---\n\n# ${title} Fieldbook\n\n## When to use\nUse this skill when the user is deciding what to test next for ${title}, needs a source-grounded plan, or wants assumptions made explicit.\n\n## Operating principles\n- Keep source claims separate from assumptions and proposals.\n- Prefer a small, observable experiment over a broad launch.\n- State the evidence that would change the recommendation.\n\n## Source-grounded map\n${source.trim() || "No source text has been supplied yet. Ask the user for permitted source material before making source-derived claims."}\n\n## First field experiment\n1. Name the narrowest audience and problem to test this week.\n2. Make one direct offer or prototype.\n3. Record the response, objections, and one decision for the next cycle.\n\n## Guardrails\n- Treat all supplied material as private.\n- Do not reproduce or distribute copyrighted source text.\n- Cite source excerpts or identifiers in any derived fieldbook.\n`, [title, source]);
+  const sourceDigest = useMemo(() => readySources.map(source => `- ${source.name}: ${source.text.replace(/\s+/g, " ").slice(0, 360) || "No extractable text found."}`).join("\n") || "- Project notes supplied directly in the dossier.", [readySources]);
+  const skill = useMemo(() => `---\nname: ${slug(name)}\ndescription: Use this private Fieldbook skill for ${name} to make source-aware decisions, distinguish evidence from assumptions, and plan the next test.\n---\n\n# ${name} Fieldbook\n\n## When to use\nUse when evaluating choices, shaping an experiment, or preparing a practical next step for this project.\n\n## Project brief\n- Stage: ${brief.stage}\n- Desired outcome: ${brief.outcome || "Not yet defined"}\n- Intended audience: ${brief.audience || "Not yet defined"}\n- Problem: ${brief.problem || "Not yet defined"}\n- Constraints: ${brief.constraints || "Not yet defined"}\n\n## Source inventory\n${readySources.map(source => `- ${source.name} (${formatBytes(source.size)})`).join("\n") || "- Direct project notes only"}\n\n## Working rules\n1. Label each conclusion as source-grounded, assumption, or proposal.\n2. Cite a source file by name when relying on it; do not reproduce protected passages.\n3. Prefer the smallest test that can change a decision.\n4. State what evidence would prove the current assumption wrong.\n\n## First field test\n- Hypothesis: ${brief.problem || "The project has a specific, urgent problem worth solving."}\n- Test: Invite 5 people matching ${brief.audience || "the target audience"} to respond to a narrow offer or prototype.\n- Signal: Track replies, objections, and one next decision.\n\n## Privacy\nThis pack references private, user-provided sources. Keep those sources private and do not redistribute them.\n`, [brief, name, readySources]);
 
-  function downloadSkill() {
-    const blob = new Blob([skill], { type: "text/markdown" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${safeName(title)}-SKILL.md`;
-    link.click();
-    URL.revokeObjectURL(url);
+  function update(key: keyof Brief, value: string) { setBrief(current => ({ ...current, [key]: value })); }
+  async function addFiles(files: FileList | File[]) {
+    const selected = Array.from(files);
+    setMessage("");
+    const provisional = selected.map(file => ({ id: `${file.name}-${file.lastModified}-${crypto.randomUUID()}`, name: file.name, type: file.type || "file", size: file.size, text: "", status: "reading" as const }));
+    setSources(current => [...current, ...provisional]);
+    await Promise.all(provisional.map(async (entry, index) => {
+      try { const result = await extract(selected[index]); setSources(current => current.map(source => source.id === entry.id ? { ...source, ...result } : source)); }
+      catch { setSources(current => current.map(source => source.id === entry.id ? { ...source, status: "error" } : source)); }
+    }));
   }
+  function onFileChange(event: ChangeEvent<HTMLInputElement>) { if (event.target.files) addFiles(event.target.files); event.target.value = ""; }
+  function download() { const blob = new Blob([skill], { type: "text/markdown" }); const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = `${slug(name)}-SKILL.md`; link.click(); URL.revokeObjectURL(url); }
 
   return <main>
-    <section className="hero">
-      <div className="eyebrow">Private operating-guide generator</div>
-      <h1>Turn a source into<br /><em>a field guide for action.</em></h1>
-      <p>Fieldbook turns source material you have the right to use into a private framework map, practical next experiments, and an installable Skill Pack.</p>
-      <div className="trust"><span>Private by default</span><span>•</span><span>No bundled books</span><span>•</span><span>Assumptions shown clearly</span></div>
-    </section>
+    <header><a className="mark" href="#top">FIELD<span>BOOK</span></a><div className="header-note"><span className="dot" /> Local-first workspace · Your source files stay on this device</div></header>
+    <section className="intro" id="top"><div className="eyebrow">Bring your evidence. Build your playbook.</div><h1>A project operating system<br />built from <em>your material.</em></h1><p>Drop in PDFs, documents, transcripts, notes, and research you are allowed to use. Add the real context around the venture. Fieldbook prepares the evidence, project brief, experiments, and a portable Skill Pack—without sending your sources away.</p></section>
 
-    <section className="workspace" aria-label="Fieldbook workspace">
-      <div className="steps"><span className="active">01 Source</span><span>02 Context</span><span>03 Fieldbook</span><span>04 Skill Pack</span></div>
-      <div className="input-grid">
-        <label>Venture or project idea<input value={project} onChange={(event) => setProject(event.target.value)} placeholder="What are you trying to build?" /></label>
-        <label>Permitted source material<textarea value={source} onChange={(event) => setSource(event.target.value)} rows={9} placeholder="Paste notes, an excerpt, a transcript, or a sourced web summary..." /></label>
+    <section className="app-shell" aria-label="Fieldbook project workspace">
+      <aside><div className="rail-title">NEW FIELDBOOK</div><nav><a className="selected" href="#sources">01 Sources <b>{sources.length}</b></a><a href="#brief">02 Project dossier</a><a href="#output">03 Fieldbook</a><a href="#skill">04 Skill Pack</a></nav><div className="privacy-card"><strong>Private means local.</strong><p>Files are read in your browser. No source content, account, or analytics leaves this device in this MVP.</p></div></aside>
+      <div className="canvas">
+        <section id="sources" className="section"><div className="section-heading"><div><div className="eyebrow">01 / Evidence locker</div><h2>Add the actual material</h2></div><p>PDF, DOCX, TXT, Markdown, CSV, JSON, HTML, and RTF. Select as many files as you need—there is no Fieldbook file-count or file-size setting.</p></div>
+          <input ref={inputRef} hidden type="file" multiple accept=".pdf,.docx,.txt,.md,.markdown,.csv,.json,.html,.htm,.rtf,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/*" onChange={onFileChange} />
+          <button className={`dropzone ${dragging ? "dragging" : ""}`} onClick={() => inputRef.current?.click()} onDragOver={event => { event.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={event => { event.preventDefault(); setDragging(false); addFiles(event.dataTransfer.files); }}><span className="upload-icon">↓</span><strong>Drop your source files here</strong><small>or choose files from this device</small></button>
+          {sources.length > 0 && <div className="source-list">{sources.map(source => <article key={source.id}><span className="file-type">{source.name.split(".").pop()?.toUpperCase() || "FILE"}</span><div><strong>{source.name}</strong><small>{formatBytes(source.size)} · {source.status === "ready" ? "Ready locally" : source.status === "reading" ? "Reading locally…" : source.status === "unsupported" ? "Unsupported format" : "Could not read"}</small></div><button aria-label={`Remove ${source.name}`} onClick={() => setSources(current => current.filter(item => item.id !== source.id))}>×</button></article>)}</div>}
+          <div className="rights"><b>Use-rights checkpoint</b><span>Only add material you own or have permission to use. Fieldbook maps ideas and sources; it does not publish, train on, or distribute them.</span></div>
+        </section>
+
+        <section id="brief" className="section"><div className="section-heading"><div><div className="eyebrow">02 / Project dossier</div><h2>Give the source a real-world job</h2></div><p>Good fieldbooks need more than a one-line idea. Capture the operating context the source cannot know.</p></div>
+          <div className="form-grid"><label>Project name<input value={brief.name} onChange={event => update("name", event.target.value)} placeholder="e.g. Neighborhood Renewal Studio" /></label><label>Current stage<select value={brief.stage} onChange={event => update("stage", event.target.value)}><option>Exploring</option><option>Validating</option><option>Building</option><option>Launching</option><option>Operating</option></select></label><label>Outcome you want<textarea value={brief.outcome} onChange={event => update("outcome", event.target.value)} placeholder="What would meaningful progress look like in 90 days?" /></label><label>Who is this for?<textarea value={brief.audience} onChange={event => update("audience", event.target.value)} placeholder="Specific people, context, and urgency—not a demographic label." /></label><label>Problem or opportunity<textarea value={brief.problem} onChange={event => update("problem", event.target.value)} placeholder="What needs to change, and why now?" /></label><label>Constraints and non-negotiables<textarea value={brief.constraints} onChange={event => update("constraints", event.target.value)} placeholder="Time, budget, ethics, existing commitments, decisions already made…" /></label></div>
+          <label className="full">Anything else the project needs us to understand<textarea value={brief.context} onChange={event => update("context", event.target.value)} rows={4} placeholder="Existing assets, collaborators, observations, risks, customer language, links, or relevant history…" /></label>
+        </section>
+
+        <section id="output" className="section output"><div className="section-heading"><div><div className="eyebrow">03 / Working fieldbook</div><h2>Turn evidence into a next move</h2></div><p>This local version creates a structured, editable decision frame. Add an approved private synthesis provider later for deeper analysis.</p></div><label className="full">Your own observations or excerpts<textarea value={notes} onChange={event => setNotes(event.target.value)} rows={5} placeholder="Add observations you want considered alongside the files…" /></label><button className="primary build" disabled={!hasInput} onClick={() => setGenerated(true)}>{hasInput ? "Build my private fieldbook" : "Add a source or project observation first"} <span>→</span></button>
+          {generated && <div className="fieldbook"><div className="fieldbook-top"><div><div className="eyebrow">{name} · working draft</div><h3>Evidence before enthusiasm.</h3></div><span>LOCAL DRAFT</span></div><div className="fieldbook-grid"><article><small>WHAT THE EVIDENCE SAYS</small><p>{sourceDigest}</p></article><article><small>WHAT WE STILL ASSUME</small><p>{brief.problem || "Define the central problem before treating this as a conclusion."}</p></article><article><small>THE NEXT TEST</small><p>Put a narrow version of the offer in front of five people in the intended audience. Record their words before changing the plan.</p></article></div></div>}
+        </section>
+
+        <section id="skill" className="section skill"><div className="section-heading"><div><div className="eyebrow">04 / Agent-ready Skill Pack</div><h2>Take the fieldbook where work happens</h2></div><p>Export a readable Markdown skill to edit, version, and install in compatible coding-agent environments.</p></div><div className="skill-callout"><div><strong>Portable `SKILL.md`</strong><p>Contains the project brief, source inventory, working rules, next test, and privacy boundary—not the full contents of your private files.</p></div><div><button onClick={async () => { await navigator.clipboard.writeText(skill); setMessage("SKILL.md copied to your clipboard."); }}>Copy</button><button className="primary" onClick={download}>Download SKILL.md</button></div></div>{message && <p className="toast" role="status">{message}</p>}<details><summary>Preview the Skill Pack</summary><pre>{skill}</pre></details></section>
       </div>
-      <div className="notice"><strong>Rights check:</strong> Only add material you own or have permission to use. Fieldbook does not store, publish, or rewrite source books.</div>
-      <button className="primary" onClick={() => setGenerated(true)}>Generate private fieldbook <span>→</span></button>
     </section>
-
-    {generated && <section className="results">
-      <div className="result-header"><div><div className="eyebrow">Draft for {title}</div><h2>Framework map + first experiment</h2></div><span className="private">PRIVATE DRAFT</span></div>
-      <div className="cards">
-        <article><small>01 / SOURCE SIGNAL</small><h3>Clarity reduces hesitation</h3><p>Your source emphasizes a clear next step and a test small enough to run now.</p><cite>Derived from your supplied material</cite></article>
-        <article><small>02 / ASSUMPTION</small><h3>A focused pilot can earn a response</h3><p>Assumption: a narrowly defined offer is more useful than a complete product launch.</p><cite>Validate with real conversations</cite></article>
-        <article><small>03 / NEXT EXPERIMENT</small><h3>Invite five qualified people</h3><p>Share a one-sentence offer, ask for a 20-minute conversation, and log language they use.</p><cite>Success: 2+ interested replies</cite></article>
-      </div>
-      <div className="skill-panel"><div><div className="eyebrow">Installable Skill Pack</div><h2>Readable. Editable. Yours.</h2><p>A portable <code>SKILL.md</code> follows the broadly compatible skill convention: concise front matter, clear use cases, operating rules, and a source-grounded workflow. It is inspired by the organizational pattern of Every Inc.’s MIT-licensed Compound Engineering project, not copied source content.</p></div><div className="skill-actions"><button onClick={() => { navigator.clipboard.writeText(skill); setCopied(true); }}>{copied ? "Copied" : "Copy SKILL.md"}</button><button className="primary" onClick={downloadSkill}>Download Skill Pack</button></div></div>
-      <details><summary>Preview generated SKILL.md</summary><pre>{skill}</pre></details>
-    </section>}
-
-    <section className="future"><div><div className="eyebrow">Designed to grow carefully</div><h2>Research and audio are adapters, not assumptions.</h2></div><p>Future research adapters can add cited current-market context only when enabled. Audio providers are isolated behind an adapter boundary; Fish Audio is evaluation-only and non-commercial unless its licensing is independently cleared.</p></section>
   </main>;
 }
