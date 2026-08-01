@@ -1,5 +1,12 @@
 # Fieldbook Session Log
 
+## 2026-08-01 - Coach Jae Hugh brand system and public build
+
+- Change: Applied the approved Coach Jae Hugh visual system: black canvas, signal red, bold display hierarchy, systems-first language, and restrained technical metadata. Changed the GitHub repository to public for build-in-public collaboration; the application remains undeployed.
+- Evidence: Local browser refresh verified the branded workspace without a runtime overlay; public repo is `https://github.com/jaehugh/Fieldbook`.
+- Blocker: A public repository needs a deliberate open-source license before outside code contributions can be accepted under clear terms.
+- Next: Choose Fieldbook's license and contribution policy, then add a public roadmap and issue templates.
+
 ## 2026-08-01 - Local source workspace rebuilt
 
 - Change: Replaced the thin source-text demo with an actual browser-local intake workspace supporting multiple PDFs, DOCX files, and common text formats; added a project dossier, source inventory, evidence/assumption/test frame, and safer Skill Pack export.

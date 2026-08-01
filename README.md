@@ -2,6 +2,10 @@
 
 Private operating guides made from sources the user has the right to use.
 
+## Building in public
+
+The repository is public so contributors can follow and improve the product. The app remains local-first, and no real user source material belongs in Git history, issues, pull requests, examples, or screenshots.
+
 ## What this MVP does
 
 1. Accepts multiple local PDF, DOCX, TXT, Markdown, CSV, JSON, HTML, and RTF source files, extracts their readable text in the browser, and shows a source inventory.

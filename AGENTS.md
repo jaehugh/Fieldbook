@@ -6,7 +6,7 @@ Fieldbook is a private, bring-your-own-source operating-guide generator. It conv
 
 ## Status and next gate
 
-- Status: private local MVP; not published.
+- Status: local MVP with a public build-in-public GitHub repository; the application itself is not deployed.
 - Next gate: Jae approves a test with permitted, non-sensitive material and selects a persistence/authentication approach before any hosted or multi-user build.
 
 ## Authoritative files
@@ -22,7 +22,7 @@ Fieldbook is a private, bring-your-own-source operating-guide generator. It conv
 - Inherit the vault root `AGENTS.md` in full.
 - Keep user-provided source material private by default. Do not add real source files, client data, credentials, or copyrighted books to this repository.
 - Do not claim to reproduce, replace, distribute, or rewrite copyrighted material. Outputs must distinguish source-grounded observations, assumptions, and proposals.
-- Keep Fieldbook unpublished until Jae explicitly approves publication.
+- Keep the application undeployed until Jae explicitly approves publication. The GitHub repository is public; never commit real user sources, credentials, or client material.
 - Market research must use a separately enabled adapter and cite its sources. Audio adapters remain optional; Fish Audio is non-commercial evaluation-only unless licensing is independently verified and approved.
 - Skill Packs are user-editable `SKILL.md` files, compatible in spirit with agentic coding environments. Preserve attribution for third-party patterns; do not copy third-party source text unless the license permits it and required notices are included.
 
