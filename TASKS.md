@@ -17,3 +17,4 @@
 - [x] Add native Last30Days current-market research handoffs and upstream creator/provider credits.
 - [x] Make Last30Days a mandatory automatic gate in every Fieldbook Agent Skill run and combine its dated evidence with the project-source output.
 - [x] Rewrite tester-facing human and agent guides in plain language.
+- [x] Make the browser produce an immediate source-grounded Fieldbook instead of a handoff-only result.
