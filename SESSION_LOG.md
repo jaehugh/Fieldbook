@@ -1,5 +1,12 @@
 # Fieldbook Session Log
 
+## 2026-08-01 - Apache-2.0 adopted
+
+- Change: Added Apache License 2.0 with a 2026 John Hughes III copyright notice and documented its code, trademark, and private-source boundary in the public README.
+- Evidence: Root `LICENSE` and README License section.
+- Blocker: none.
+- Next: Add a public contribution guide and roadmap when ready for outside contributors.
+
 ## 2026-08-01 - Coach Jae Hugh brand system and public build
 
 - Change: Applied the approved Coach Jae Hugh visual system: black canvas, signal red, bold display hierarchy, systems-first language, and restrained technical metadata. Changed the GitHub repository to public for build-in-public collaboration; the application remains undeployed.

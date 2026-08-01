@@ -6,6 +6,10 @@ Private operating guides made from sources the user has the right to use.
 
 The repository is public so contributors can follow and improve the product. The app remains local-first, and no real user source material belongs in Git history, issues, pull requests, examples, or screenshots.
 
+## License
+
+Fieldbook is licensed under the [Apache License 2.0](LICENSE). This keeps the code broadly usable while including an explicit patent grant. The Fieldbook name, Coach Jae Hugh marks, and any user-provided source material are not granted for unrestricted trademark or content reuse.
+
 ## What this MVP does
 
 1. Accepts multiple local PDF, DOCX, TXT, Markdown, CSV, JSON, HTML, and RTF source files, extracts their readable text in the browser, and shows a source inventory.
