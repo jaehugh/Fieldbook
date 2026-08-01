@@ -35,6 +35,10 @@ export default function Home() {
   const [generated, setGenerated] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [message, setMessage] = useState("");
+  const [referenceId, setReferenceId] = useState("");
+  const [nonCommercialConfirmed, setNonCommercialConfirmed] = useState(false);
+  const [audioUrl, setAudioUrl] = useState("");
+  const [narrationStatus, setNarrationStatus] = useState<"idle" | "working" | "error">("idle");
   const inputRef = useRef<HTMLInputElement>(null);
   const name = brief.name.trim() || "Untitled project";
   const readySources = sources.filter(source => source.status === "ready");
@@ -56,6 +60,16 @@ export default function Home() {
   }
   function onFileChange(event: ChangeEvent<HTMLInputElement>) { if (event.target.files) addFiles(event.target.files); event.target.value = ""; }
   function download() { const blob = new Blob([skill], { type: "text/markdown" }); const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = `${slug(name)}-SKILL.md`; link.click(); URL.revokeObjectURL(url); }
+  async function narrate() {
+    setNarrationStatus("working"); setMessage("");
+    try {
+      const text = `${name}. ${brief.outcome ? `Outcome: ${brief.outcome}. ` : ""}${brief.problem ? `Problem to solve: ${brief.problem}. ` : ""}First field test: put a narrow offer in front of five people in the intended audience and record their response.`;
+      const response = await fetch("/api/narrate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, referenceId, confirmedNonCommercial: nonCommercialConfirmed }) });
+      if (!response.ok) { const payload = await response.json().catch(() => ({})); throw new Error(payload.error || "Narration failed."); }
+      if (audioUrl) URL.revokeObjectURL(audioUrl);
+      setAudioUrl(URL.createObjectURL(await response.blob())); setNarrationStatus("idle"); setMessage("Narration is ready on this device.");
+    } catch (error) { setNarrationStatus("error"); setMessage(error instanceof Error ? error.message : "Narration failed."); }
+  }
 
   return <main>
     <header><a className="mark" href="#top">FIELD<span>BOOK</span></a><div className="header-note"><span className="dot" /> LOCAL-FIRST SYSTEM · YOUR SOURCES STAY ON THIS DEVICE</div></header>
@@ -78,6 +92,7 @@ export default function Home() {
 
         <section id="output" className="section output"><div className="section-heading"><div><div className="eyebrow">03 / Working fieldbook</div><h2>Turn evidence into a next move</h2></div><p>This local version creates a structured, editable decision frame. Add an approved private synthesis provider later for deeper analysis.</p></div><label className="full">Your own observations or excerpts<textarea value={notes} onChange={event => setNotes(event.target.value)} rows={5} placeholder="Add observations you want considered alongside the files…" /></label><button className="primary build" disabled={!hasInput} onClick={() => setGenerated(true)}>{hasInput ? "Build my private fieldbook" : "Add a source or project observation first"} <span>→</span></button>
           {generated && <div className="fieldbook"><div className="fieldbook-top"><div><div className="eyebrow">{name} · working draft</div><h3>Evidence before enthusiasm.</h3></div><span>LOCAL DRAFT</span></div><div className="fieldbook-grid"><article><small>WHAT THE EVIDENCE SAYS</small><p>{sourceDigest}</p></article><article><small>WHAT WE STILL ASSUME</small><p>{brief.problem || "Define the central problem before treating this as a conclusion."}</p></article><article><small>THE NEXT TEST</small><p>Put a narrow version of the offer in front of five people in the intended audience. Record their words before changing the plan.</p></article></div></div>}
+          {generated && <div className="audio-adapter"><div><div className="eyebrow">Optional adapter / Fish Audio</div><h3>Hear the next move.</h3><p>Create a local MP3 narration of this fieldbook’s core brief. This experimental adapter is restricted to non-commercial evaluation until Fish Audio’s commercial terms are separately approved.</p></div><div className="audio-controls"><label>Voice model ID <input value={referenceId} onChange={event => setReferenceId(event.target.value)} placeholder="Optional Fish Audio reference ID" /></label><label className="checkbox"><input type="checkbox" checked={nonCommercialConfirmed} onChange={event => setNonCommercialConfirmed(event.target.checked)} /> I confirm this is non-commercial evaluation use.</label><button className="primary" disabled={!nonCommercialConfirmed || narrationStatus === "working"} onClick={narrate}>{narrationStatus === "working" ? "Generating narration…" : "Generate MP3 narration"}</button>{audioUrl && <audio controls src={audioUrl}>Your browser does not support audio playback.</audio>}</div></div>}
         </section>
 
         <section id="skill" className="section skill"><div className="section-heading"><div><div className="eyebrow">04 / Agent-ready Skill Pack</div><h2>Take the fieldbook where work happens</h2></div><p>Export a readable Markdown skill to edit, version, and install in compatible coding-agent environments.</p></div><div className="skill-callout"><div><strong>Portable `SKILL.md`</strong><p>Contains the project brief, source inventory, working rules, next test, and privacy boundary—not the full contents of your private files.</p></div><div><button onClick={async () => { await navigator.clipboard.writeText(skill); setMessage("SKILL.md copied to your clipboard."); }}>Copy</button><button className="primary" onClick={download}>Download SKILL.md</button></div></div>{message && <p className="toast" role="status">{message}</p>}<details><summary>Preview the Skill Pack</summary><pre>{skill}</pre></details></section>

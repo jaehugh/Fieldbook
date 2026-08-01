@@ -1,5 +1,12 @@
 # Fieldbook Session Log
 
+## 2026-08-01 - Fish Audio evaluation adapter
+
+- Change: Added an optional Fish Audio TTS endpoint and fieldbook narration control. API keys remain server-side and the adapter is disabled by default, with an environment and UI non-commercial-use gate.
+- Evidence: `app/api/narrate/route.ts`, `.env.example`, and Fieldbook narration UI.
+- Blocker: Commercial use is prohibited under the current Fish Audio research license without a separate written commercial license; the adapter cannot be used for a paid product, customer work, or internal business use until cleared.
+- Next: Add a separately licensed commercial provider or secure written Fish Audio commercial permission before any commercial release.
+
 ## 2026-08-01 - Apache-2.0 adopted
 
 - Change: Added Apache License 2.0 with a 2026 John Hughes III copyright notice and documented its code, trademark, and private-source boundary in the public README.

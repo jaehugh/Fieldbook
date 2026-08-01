@@ -12,3 +12,4 @@
 - [x] Document modular research and audio boundaries, including Fish Audio's license gate.
 - [x] Create and connect the private GitHub repository.
 - [x] Upgrade intake to browser-local multi-file PDF/DOCX/text extraction and replace the one-line idea form with a complete project dossier.
+- [x] Add the optional, server-side Fish Audio narration adapter with API-key protection and a non-commercial evaluation gate.
