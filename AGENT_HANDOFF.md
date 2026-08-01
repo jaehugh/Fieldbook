@@ -15,6 +15,7 @@ Fieldbook is designed for human judgment, agent execution, or a deliberate mix o
 - Build a traceable framework map and distinguish evidence from assumptions.
 - Suggest experiments, create a `SKILL.md`, and prepare optional narration scripts.
 - Use available approved MCP tools for optional capabilities such as research or audio. Never embed or request a provider API key in Fieldbook.
+- Use the native Last30Days research handoff when current market evidence is needed; preserve dates, URLs, platform attribution, and uncertainty.
 
 ## Handoff sequence
 

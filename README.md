@@ -16,6 +16,7 @@ Fieldbook is licensed under the [Apache License 2.0](LICENSE). This keeps the co
 2. Captures a project dossier: desired outcome, audience, problem, current stage, constraints, and operating context.
 3. Produces a clearly bounded draft: source signal, assumption, and next experiment.
 4. Generates a readable, editable, downloadable `SKILL.md` Skill Pack for agentic coding environments.
+5. Creates a native Last30Days research handoff for current market evidence, when used in an agent host where that skill is installed.
 
 The MVP is intentionally local and client-side: source text remains in the browser unless the user chooses to export it. Fieldbook does not impose its own file-count or file-size setting; practical capacity is determined by the user's browser and device memory. It has no accounts, server uploads, database, analytics, external AI call, market-research call, or audio-provider connection.
 
@@ -41,3 +42,7 @@ See [architecture notes](docs/ARCHITECTURE.md) for pluggable research, persisten
 ## Human + agent operation
 
 Fieldbook is usable by a human alone, an agent alone with explicit source attachments, or both together. The app creates a private Agent Handoff packet and a portable `SKILL.md`; it does not embed provider keys or direct model integrations. Agent hosts can use their own approved MCP tools for optional research, narration, or other capabilities. See [Agent Handoff](AGENT_HANDOFF.md).
+
+## Current-market research and credits
+
+Fieldbook has a native [Last30Days research lane](FIELD_RESEARCH.md) that generates a private handoff for Matt Van Horn's MIT-licensed [last30days skill](https://github.com/mvanhorn/last30days-skill). It keeps current-market evidence separate from private source material and requires citations before findings become a fieldbook recommendation. See [Credits](CREDITS.md) for every upstream creator and provider relationship.

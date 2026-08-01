@@ -1,5 +1,12 @@
 # Fieldbook Session Log
 
+## 2026-08-01 - Native Last30Days research lane and creator credits
+
+- Change: Added an in-product Last30Days research-handoff generator, a strict current-market evidence protocol, and a public credit ledger for Matt Van Horn, Every Inc., and Fish Audio.
+- Evidence: `FIELD_RESEARCH.md`, `CREDITS.md`, and the research lane in `app/page.tsx`.
+- Blocker: Last30Days must be installed in the selected agent host; Fieldbook does not replace that tool or transmit private files to it.
+- Next: Run the first project-specific current-market brief and test the human review loop.
+
 ## 2026-08-01 - Human-plus-agent architecture adopted
 
 - Change: Removed the direct Fish Audio API route and key configuration. Fieldbook now exports a private Agent Handoff packet and Skill Pack; optional research, narration, and other tools run through approved MCP tools in the user’s chosen agent host.
