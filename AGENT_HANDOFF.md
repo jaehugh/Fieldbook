@@ -15,13 +15,13 @@ Fieldbook is designed for human judgment, agent execution, or a deliberate mix o
 - Build a traceable framework map and distinguish evidence from assumptions.
 - Suggest experiments, create a `SKILL.md`, and prepare optional narration scripts.
 - Use available approved MCP tools for optional capabilities such as research or audio. Never embed or request a provider API key in Fieldbook.
-- Use the native Last30Days research handoff when current market evidence is needed; preserve dates, URLs, platform attribution, and uncertainty.
+- Automatically invoke the native Last30Days research gate for every Fieldbook run before final output; preserve dates, URLs, platform attribution, and uncertainty.
 
 ## Handoff sequence
 
 1. Human creates a Fieldbook project and uploads sources locally.
 2. Human copies the Agent Handoff packet and attaches any permitted source files in their agent host.
-3. Agent performs the scoped work and returns cited, reviewable output.
+3. Agent extracts the private-source layer, automatically runs Last30Days in the project’s scope, then returns the combined cited, reviewable output.
 4. Human accepts, changes, or rejects the recommendation.
 5. Agent packages accepted operating rules as a Skill Pack.
 

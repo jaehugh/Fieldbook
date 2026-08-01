@@ -1,5 +1,12 @@
 # Fieldbook Session Log
 
+## 2026-08-01 - Last30Days made automatic in the Fieldbook run
+
+- Change: Corrected the research lane from an optional handoff into a mandatory execution gate inside every generated Fieldbook Skill Pack and the repository’s Fieldbook agent skill.
+- Evidence: `skills/fieldbook/SKILL.md`, generated `SKILL.md` contract, and revised UI/research documentation.
+- Blocker: The host must have Last30Days installed for agent execution; browser-only local mode intentionally does not transmit sources or run agent tools.
+- Next: Run a complete Fieldbook Skill Pack in an agent host against a permitted project packet.
+
 ## 2026-08-01 - Native Last30Days research lane and creator credits
 
 - Change: Added an in-product Last30Days research-handoff generator, a strict current-market evidence protocol, and a public credit ledger for Matt Van Horn, Every Inc., and Fish Audio.

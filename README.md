@@ -16,7 +16,7 @@ Fieldbook is licensed under the [Apache License 2.0](LICENSE). This keeps the co
 2. Captures a project dossier: desired outcome, audience, problem, current stage, constraints, and operating context.
 3. Produces a clearly bounded draft: source signal, assumption, and next experiment.
 4. Generates a readable, editable, downloadable `SKILL.md` Skill Pack for agentic coding environments.
-5. Creates a native Last30Days research handoff for current market evidence, when used in an agent host where that skill is installed.
+5. Automatically runs a native Last30Days current-market research gate inside every Fieldbook Agent Skill run, then combines that cited layer with the project’s private-source evidence.
 
 The MVP is intentionally local and client-side: source text remains in the browser unless the user chooses to export it. Fieldbook does not impose its own file-count or file-size setting; practical capacity is determined by the user's browser and device memory. It has no accounts, server uploads, database, analytics, external AI call, market-research call, or audio-provider connection.
 
@@ -45,4 +45,4 @@ Fieldbook is usable by a human alone, an agent alone with explicit source attach
 
 ## Current-market research and credits
 
-Fieldbook has a native [Last30Days research lane](FIELD_RESEARCH.md) that generates a private handoff for Matt Van Horn's MIT-licensed [last30days skill](https://github.com/mvanhorn/last30days-skill). It keeps current-market evidence separate from private source material and requires citations before findings become a fieldbook recommendation. See [Credits](CREDITS.md) for every upstream creator and provider relationship.
+Fieldbook has a native [Last30Days research lane](FIELD_RESEARCH.md) that is mandatory in the [Fieldbook Agent Skill](skills/fieldbook/SKILL.md). Every agent run first reads the project and approved sources, then automatically invokes Matt Van Horn's MIT-licensed [last30days skill](https://github.com/mvanhorn/last30days-skill) with that project’s scope, and finally merges the dated/cited market layer into the fieldbook. See [Credits](CREDITS.md) for every upstream creator and provider relationship.

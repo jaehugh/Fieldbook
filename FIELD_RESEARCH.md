@@ -4,11 +4,10 @@ Fieldbook treats current-market research as a separate evidence layer. It never 
 
 ## Native workflow
 
-1. A human sets a project-specific research focus in Fieldbook.
-2. Fieldbook creates a `/last30days` agent handoff.
-3. An agent host with the [last30days skill](https://github.com/mvanhorn/last30days-skill) installed runs the research.
-4. The agent returns dated, attributable findings with uncertainty intact.
-5. The human decides what belongs in the fieldbook and what experiment to run.
+1. A human or agent fills the project dossier and attaches permitted source material.
+2. The generated Fieldbook Skill Pack automatically invokes `/last30days` with a query scoped to the project, audience, problem, desired outcome, and alternatives.
+3. The agent returns dated, attributable findings with uncertainty intact and merges them into the final Fieldbook.
+4. The human decides what experiment to run.
 
 ## Required research output
 
@@ -20,7 +19,7 @@ Fieldbook treats current-market research as a separate evidence layer. It never 
 
 ## Privacy rule
 
-The Last30Days research request does not include Fieldbook source files. Attaching any private file to an agent host remains a separate explicit human decision.
+The automatic Last30Days research request does not include Fieldbook source files. Attaching any private file to an agent host remains a separate explicit human decision.
 
 ## Credit
 
