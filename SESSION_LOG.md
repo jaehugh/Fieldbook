@@ -1,5 +1,17 @@
 # Fieldbook Session Log
 
+## 2026-08-01 - Fieldbook introduction sent to The Next New Thing
+
+- Change: Sent a brief introduction to the show’s public contact address after confirming it in the current Last30Days episode description.
+- Evidence: [Exact sent email](2026-08-01%20-%20Email%20-%20Andrew%20Warner%20-%20Fieldbook%20Introduction.md); AgentMail thread `4ca5ddd8-1662-44d6-b1fa-27b3c5abe140`.
+- Next: Wait for a reply; do not follow up without a useful reason.
+
+## 2026-08-01 - Plain-language tester guides
+
+- Change: Rewrote the public README, agent handoff, and research guide so a first-time human or agent user can understand the local test flow, privacy boundary, and mandatory recent-market check without product jargon.
+- Evidence: `README.md`, `AGENT_HANDOFF.md`, and `FIELD_RESEARCH.md`.
+- Next: Put the flow in front of a first tester using permitted, non-sensitive material and turn their friction into issues.
+
 ## 2026-08-01 - Last30Days made automatic in the Fieldbook run
 
 - Change: Corrected the research lane from an optional handoff into a mandatory execution gate inside every generated Fieldbook Skill Pack and the repository’s Fieldbook agent skill.

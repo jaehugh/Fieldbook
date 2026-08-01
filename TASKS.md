@@ -3,6 +3,7 @@
 ## Open
 
 - [ ] Run a first private usability test with permitted, non-sensitive source material.
+- [ ] Ask first testers (human and agent users) which step felt confusing; turn the clearest feedback into issues.
 - [ ] Decide the approved inference provider, authentication, source retention, and deletion policy before adding persistence.
 - [ ] Test generated Skill Pack installation in selected agentic coding environments.
 
@@ -15,3 +16,4 @@
 - [x] Replace the direct Fish Audio integration with a human-plus-agent handoff that uses approved MCP tools in the selected agent host.
 - [x] Add native Last30Days current-market research handoffs and upstream creator/provider credits.
 - [x] Make Last30Days a mandatory automatic gate in every Fieldbook Agent Skill run and combine its dated evidence with the project-source output.
+- [x] Rewrite tester-facing human and agent guides in plain language.

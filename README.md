@@ -1,48 +1,100 @@
 # Fieldbook
 
-Private operating guides made from sources the user has the right to use.
+Turn your own notes into a simple plan you can use.
 
-## Building in public
+Fieldbook is a free, local-first tool for people and AI agents. Give it source material you are allowed to use (like your notes, a PDF, a transcript, or a document) and tell it about your project. It helps make a practical Fieldbook: what matters, what is still a guess, and what to try next.
 
-The repository is public so contributors can follow and improve the product. The app remains local-first, and no real user source material belongs in Git history, issues, pull requests, examples, or screenshots.
+**Your files stay on your computer in this first version.** Fieldbook does not have accounts, uploads, a database, or a secret file-size limit.
 
-## License
+## Try it in five minutes
 
-Fieldbook is licensed under the [Apache License 2.0](LICENSE). This keeps the code broadly usable while including an explicit patent grant. The Fieldbook name, Coach Jae Hugh marks, and any user-provided source material are not granted for unrestricted trademark or content reuse.
+1. Download or clone this project.
+2. Open the `Fieldbook` folder in a terminal.
+3. Run `npm install` once.
+4. Run `npm run dev`.
+5. Open the local link it shows (usually `http://localhost:3000`).
+6. Add a file and fill in the project questions.
+7. Click **Generate Fieldbook**.
 
-## What this MVP does
+That is it. You can download the result as a small `SKILL.md` file for an AI coding tool, or use the plan yourself.
 
-1. Accepts multiple local PDF, DOCX, TXT, Markdown, CSV, JSON, HTML, and RTF source files, extracts their readable text in the browser, and shows a source inventory.
-2. Captures a project dossier: desired outcome, audience, problem, current stage, constraints, and operating context.
-3. Produces a clearly bounded draft: source signal, assumption, and next experiment.
-4. Generates a readable, editable, downloadable `SKILL.md` Skill Pack for agentic coding environments.
-5. Automatically runs a native Last30Days current-market research gate inside every Fieldbook Agent Skill run, then combines that cited layer with the project’s private-source evidence.
+## What to put in it
 
-The MVP is intentionally local and client-side: source text remains in the browser unless the user chooses to export it. Fieldbook does not impose its own file-count or file-size setting; practical capacity is determined by the user's browser and device memory. It has no accounts, server uploads, database, analytics, external AI call, market-research call, or audio-provider connection.
+### Good source material
 
-## Local use
+- Your meeting notes
+- A PDF you own or are allowed to use
+- A transcript you made
+- Your research notes
+- A webpage saved as text
 
-From this directory, run `npm run dev`, then open the local address supplied by the development server. Build verification uses `npm run build`.
+### Good project details
 
-## Product limits
+Tell Fieldbook:
 
-- Supply only material you own or are authorized to use.
-- Fieldbook does not bundle books or turn books into substitutes for the original work.
-- The sample generation is a deterministic MVP demonstration; production synthesis needs an explicitly approved private inference provider and retention policy.
-- Skill Packs are portable Markdown, not a guarantee that every agent product will load the same format.
+- What you want to make or improve
+- Who it is for
+- What problem it solves
+- What you already tried
+- What you cannot do yet (time, money, rules, tools, and so on)
 
-## Skill Pack convention and attribution
+More helpful details make a better plan. You do not have to start with only one short idea.
 
-Fieldbook adopts a minimal, broadly recognizable layout: YAML front matter, a purpose/use section, operating principles, a source-grounded workflow, and guardrails. That organizational convention was informed by the public MIT-licensed [EveryInc Compound Engineering plugin](https://github.com/EveryInc/compound-engineering-plugin). Fieldbook does not incorporate its skill text, agents, or code. Any future direct reuse must preserve the MIT license and attribution requirements.
+## What happens next
 
-## Future path
+Fieldbook makes three clear buckets:
 
-See [architecture notes](docs/ARCHITECTURE.md) for pluggable research, persistence, and audio-provider design.
+| Bucket | Meaning |
+| --- | --- |
+| **Source signal** | Something your files actually say. |
+| **Assumption** | Something that may be true, but still needs a check. |
+| **Next experiment** | A small, safe test to learn what works. |
 
-## Human + agent operation
+It also makes an editable Skill Pack called `SKILL.md`. An agent can read that file as instructions for helping with the same project.
 
-Fieldbook is usable by a human alone, an agent alone with explicit source attachments, or both together. The app creates a private Agent Handoff packet and a portable `SKILL.md`; it does not embed provider keys or direct model integrations. Agent hosts can use their own approved MCP tools for optional research, narration, or other capabilities. See [Agent Handoff](AGENT_HANDOFF.md).
+## Using it with an AI agent
 
-## Current-market research and credits
+The browser app is a private workspace. It does not send your files anywhere.
 
-Fieldbook has a native [Last30Days research lane](FIELD_RESEARCH.md) that is mandatory in the [Fieldbook Agent Skill](skills/fieldbook/SKILL.md). Every agent run first reads the project and approved sources, then automatically invokes Matt Van Horn's MIT-licensed [last30days skill](https://github.com/mvanhorn/last30days-skill) with that project’s scope, and finally merges the dated/cited market layer into the fieldbook. See [Credits](CREDITS.md) for every upstream creator and provider relationship.
+If you want an agent to help:
+
+1. Download the Skill Pack.
+2. Attach only the source files you approve in your agent tool.
+3. Give the agent the Skill Pack.
+4. Ask it to run Fieldbook and show its work.
+5. Review the answer before acting on it.
+
+Every real Fieldbook agent run includes a required **Last30Days** check. The agent looks for recent, public market signals about *your* project, then keeps those findings separate from your private files. It must show dates, links, and uncertainty before suggesting a final experiment. The browser alone cannot run this step because it deliberately does not connect to agent tools or the web.
+
+Read the copy-and-paste agent instructions in [AGENT_HANDOFF.md](AGENT_HANDOFF.md). Read the simple research rules in [FIELD_RESEARCH.md](FIELD_RESEARCH.md).
+
+## Things Fieldbook will not do
+
+- It will not include books, PDFs, or client files in this public repository.
+- It will not turn a copyrighted book into a replacement for that book.
+- It will not pretend a guess is a fact.
+- It will not upload your files behind your back.
+- It will not promise that every AI tool reads Skill Packs in exactly the same way.
+
+Please use only material you own or have permission to use.
+
+## No file limit? The honest answer
+
+Fieldbook does not set a file count or file-size cap. Your computer and browser are the real limit. A very large PDF can still be slow or make a browser run out of memory. Start with a small, non-sensitive test file first.
+
+## For contributors
+
+Want to help? Try the app with fake or permitted sample material, report what felt confusing, or improve the interface and docs. Never put real customer files, personal data, passwords, or copyrighted books in an issue, pull request, screenshot, or commit.
+
+Fieldbook uses the [Apache License 2.0](LICENSE) for its code. The Fieldbook name and logo/brand are not automatically licensed, and your source material always remains yours.
+
+## Credits
+
+Fieldbook is inspired by open work from people in the agent community. The product uses no copied private books or source libraries. See [CREDITS.md](CREDITS.md) for clear credit and license notes.
+
+## More details
+
+- [Quick agent handoff](AGENT_HANDOFF.md)
+- [How the recent-market check works](FIELD_RESEARCH.md)
+- [Technical architecture](docs/ARCHITECTURE.md)
+- [Contributor task list](TASKS.md)

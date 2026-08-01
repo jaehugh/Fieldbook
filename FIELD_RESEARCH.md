@@ -1,26 +1,37 @@
-# Fieldbook Current-Market Research Lane
+# Fieldbook’s Recent-Market Check
 
-Fieldbook treats current-market research as a separate evidence layer. It never silently mixes current social/web signals with a user's private source material.
+People change their minds fast. That is why every Fieldbook run with an agent does one required recent-market check before it recommends a test.
 
-## Native workflow
+## What it does
 
-1. A human or agent fills the project dossier and attaches permitted source material.
-2. The generated Fieldbook Skill Pack automatically invokes `/last30days` with a query scoped to the project, audience, problem, desired outcome, and alternatives.
-3. The agent returns dated, attributable findings with uncertainty intact and merges them into the final Fieldbook.
-4. The human decides what experiment to run.
+The agent uses the MIT-licensed [Last30Days skill](https://github.com/mvanhorn/last30days-skill) by Matt Van Horn to look for recent public conversation about this exact project:
 
-## Required research output
+- Who the project is for
+- What problem it solves
+- What outcome people want
+- What they already use instead
 
-- The exact research question and run date.
-- URLs, platform/source attribution, and observed dates.
-- Customer language, objections, alternatives, and demand signals.
-- Clear separation of current evidence, Fieldbook-source evidence, assumptions, and proposals.
-- One proposed experiment, subject to human approval.
+It looks for useful real-world language: questions, complaints, wishes, objections, and signs people care.
 
-## Privacy rule
+## What it does not do
 
-The automatic Last30Days research request does not include Fieldbook source files. Attaching any private file to an agent host remains a separate explicit human decision.
+- It does not send your private PDF, notes, or transcript to the research tool.
+- It does not replace your source material.
+- It does not turn one online comment into a proven fact.
+- It does not run in the browser-only app. It runs in the agent tool after you choose to use an agent.
+
+## The simple order
+
+1. Read the approved project details and private sources.
+2. Run Last30Days for the project’s exact scope.
+3. Show the research date, links, platforms, and uncertainty.
+4. Keep public research and private-source findings in separate sections.
+5. Suggest one small experiment for the human to approve.
+
+## If the agent cannot run it
+
+The agent must say so and stop before making the final recommendation. It should ask the human to install Last30Days or choose a different approved research method. It must not pretend the check happened.
 
 ## Credit
 
-This research lane is powered by the MIT-licensed [last30days skill](https://github.com/mvanhorn/last30days-skill) by Matt Van Horn (`mvanhorn`). Fieldbook does not copy its implementation; it creates a compatible agent handoff and preserves attribution.
+Fieldbook builds a compatible handoff around the Last30Days skill; it does not copy the skill’s implementation. See [CREDITS.md](CREDITS.md) for the full credit and license note.
