@@ -1,12 +1,7 @@
 "use client";
 
 import { ChangeEvent, useMemo, useRef, useState } from "react";
-import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
 import mammoth from "mammoth";
-
-if (typeof window !== "undefined") {
-  GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
-}
 
 type Source = { id: string; name: string; type: string; size: number; text: string; status: "ready" | "reading" | "unsupported" | "error" };
 type Brief = { name: string; outcome: string; audience: string; problem: string; context: string; constraints: string; stage: string };
@@ -19,7 +14,9 @@ const slug = (value: string) => value.toLowerCase().match(/[a-z0-9]+/g)?.join("-
 async function extract(file: File): Promise<Pick<Source, "text" | "status">> {
   const name = file.name.toLowerCase();
   if (name.endsWith(".pdf")) {
-    const pdf = await getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+    const pdfjs = await import("pdfjs-dist");
+    pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
+    const pdf = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
     const pages = await Promise.all(Array.from({ length: pdf.numPages }, async (_, index) => {
       const content = await pdf.getPage(index + 1).then(page => page.getTextContent());
       return content.items.map(item => "str" in item ? item.str : "").join(" ");
@@ -61,11 +58,11 @@ export default function Home() {
   function download() { const blob = new Blob([skill], { type: "text/markdown" }); const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = `${slug(name)}-SKILL.md`; link.click(); URL.revokeObjectURL(url); }
 
   return <main>
-    <header><a className="mark" href="#top">FIELD<span>BOOK</span></a><div className="header-note"><span className="dot" /> Local-first workspace · Your source files stay on this device</div></header>
-    <section className="intro" id="top"><div className="eyebrow">Bring your evidence. Build your playbook.</div><h1>A project operating system<br />built from <em>your material.</em></h1><p>Drop in PDFs, documents, transcripts, notes, and research you are allowed to use. Add the real context around the venture. Fieldbook prepares the evidence, project brief, experiments, and a portable Skill Pack—without sending your sources away.</p></section>
+    <header><a className="mark" href="#top">FIELD<span>BOOK</span></a><div className="header-note"><span className="dot" /> LOCAL-FIRST SYSTEM · YOUR SOURCES STAY ON THIS DEVICE</div></header>
+    <section className="intro" id="top"><div className="eyebrow">FROM CHAOS TO CLARITY</div><h1>BUILD THE SYSTEM.<br /><em>RUN THE FIELD.</em></h1><p>Bring the PDFs, documents, transcripts, notes, and research you are allowed to use. Add the full project context. Fieldbook turns scattered knowledge into a working operating guide, a first test, and a portable Skill Pack.</p><div className="intro-rule"><span>PRIVATE BY DEFAULT</span><span>STRUCTURE BEFORE SCALE</span><span>SILENT MOVES. LOUD RESULTS.</span></div></section>
 
     <section className="app-shell" aria-label="Fieldbook project workspace">
-      <aside><div className="rail-title">NEW FIELDBOOK</div><nav><a className="selected" href="#sources">01 Sources <b>{sources.length}</b></a><a href="#brief">02 Project dossier</a><a href="#output">03 Fieldbook</a><a href="#skill">04 Skill Pack</a></nav><div className="privacy-card"><strong>Private means local.</strong><p>Files are read in your browser. No source content, account, or analytics leaves this device in this MVP.</p></div></aside>
+      <aside><div className="rail-title">THE FIELD SYSTEM</div><nav><a className="selected" href="#sources">01 Sources <b>{sources.length}</b></a><a href="#brief">02 Project dossier</a><a href="#output">03 Fieldbook</a><a href="#skill">04 Skill Pack</a></nav><div className="privacy-card"><strong>See the full picture.</strong><p>Files are read in your browser. No source content, account, or analytics leaves this device in this MVP.</p></div></aside>
       <div className="canvas">
         <section id="sources" className="section"><div className="section-heading"><div><div className="eyebrow">01 / Evidence locker</div><h2>Add the actual material</h2></div><p>PDF, DOCX, TXT, Markdown, CSV, JSON, HTML, and RTF. Select as many files as you need—there is no Fieldbook file-count or file-size setting.</p></div>
           <input ref={inputRef} hidden type="file" multiple accept=".pdf,.docx,.txt,.md,.markdown,.csv,.json,.html,.htm,.rtf,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/*" onChange={onFileChange} />
