@@ -5,6 +5,7 @@
 - Change: Corrected the browser experience after first-test feedback. "Build my Fieldbook" now immediately creates a private, source-grounded operating guide: project framing, recurring themes, attributable source excerpts, labeled assumptions, and a small first experiment.
 - Boundary: Last30Days remains required for an agent-host run, but is now plainly presented as the later current-market layer rather than the browser's only output.
 - Evidence: app/page.tsx, app/globals.css, verified local build, and refreshed local UI.
+- Follow-up: The browser now remembers the project dossier and manual notes on the same device after a refresh. Source files remain browser-local and must be re-added after a browser restart.
 
 ## 2026-08-01 - Fieldbook introduction sent to The Next New Thing
 

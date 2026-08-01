@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useMemo, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import mammoth from "mammoth";
 
 type Source = { id: string; name: string; type: string; size: number; text: string; status: "ready" | "reading" | "unsupported" | "error" };
@@ -58,6 +58,7 @@ export default function Home() {
   const [generated, setGenerated] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [message, setMessage] = useState("");
+  const [draftLoaded, setDraftLoaded] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const name = brief.name.trim() || "Untitled project";
   const readySources = sources.filter(source => source.status === "ready");
@@ -68,6 +69,24 @@ export default function Home() {
 
   const sourceDigest = useMemo(() => readySources.map(source => `- ${source.name}: ${source.text.replace(/\s+/g, " ").slice(0, 360) || "No extractable text found."}`).join("\n") || "- Project notes supplied directly in the dossier.", [readySources]);
   const skill = useMemo(() => `---\nname: ${slug(name)}\ndescription: Run the complete Fieldbook process for ${name}: private-source synthesis, mandatory Last30Days market research, and a cited next experiment.\n---\n\n# ${name} Fieldbook\n\n## When to use\nUse when evaluating choices, shaping an experiment, or preparing a practical next step for this project.\n\n## Project brief\n- Stage: ${brief.stage}\n- Desired outcome: ${brief.outcome || "Not yet defined"}\n- Intended audience: ${brief.audience || "Not yet defined"}\n- Problem: ${brief.problem || "Not yet defined"}\n- Constraints: ${brief.constraints || "Not yet defined"}\n\n## Source inventory\n${readySources.map(source => `- ${source.name} (${formatBytes(source.size)})`).join("\n") || "- Direct project notes only"}\n\n## Mandatory current-market gate\nBefore producing the final fieldbook, invoke the installed \`last30days\` skill for this project. Scope the query to the intended audience, problem, outcome, and viable alternatives.\n\nSuggested query: \`/last30days ${name}: ${brief.problem || "current customer needs and objections"} for ${brief.audience || "the intended audience"}\`\n\nDo not skip this gate. Keep Last30Days findings as a separate dated, cited evidence layer. Do not send private source files to the research tool unless the human explicitly attaches and approves them.\n\n## Working rules\n1. Label each conclusion as private-source grounded, current-market grounded, assumption, or proposal.\n2. Cite source files by name and market sources by URL/platform/date; do not reproduce protected passages.\n3. Resolve contradictions between the private source and current market rather than hiding them.\n4. Prefer the smallest test that can change a decision.\n5. State what evidence would prove the current assumption wrong.\n\n## Final Fieldbook output\n1. Project framing and constraints.\n2. Private-source framework map.\n3. Last30Days market signals: customer language, objections, alternatives, demand, and uncertainty.\n4. Tensions or confirmations between the two evidence layers.\n5. One human-approved next experiment.\n\n## Privacy\nThis pack references private, user-provided sources. Keep those sources private and do not redistribute them.\n`, [brief, name, readySources]);
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("fieldbook-draft-v1");
+      if (saved) {
+        const draft = JSON.parse(saved) as { brief?: Brief; notes?: string };
+        if (draft.brief) setBrief({ ...initialBrief, ...draft.brief });
+        if (typeof draft.notes === "string") setNotes(draft.notes);
+      }
+    } catch { /* A blocked or full browser store should never stop Fieldbook. */ }
+    setDraftLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!draftLoaded) return;
+    try { window.localStorage.setItem("fieldbook-draft-v1", JSON.stringify({ brief, notes })); }
+    catch { /* Keep the in-memory draft working if local storage is unavailable. */ }
+  }, [brief, notes, draftLoaded]);
 
   function update(key: keyof Brief, value: string) { setBrief(current => ({ ...current, [key]: value })); }
   async function addFiles(files: FileList | File[]) {
