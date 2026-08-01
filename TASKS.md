@@ -1,0 +1,12 @@
+# Fieldbook Tasks
+
+## Open
+
+- [ ] Run a first private usability test with permitted, non-sensitive source material.
+- [ ] Decide the approved inference provider, authentication, source retention, and deletion policy before adding persistence.
+- [ ] Test generated Skill Pack installation in selected agentic coding environments.
+
+## Completed
+
+- [x] Create local MVP for source intake, project context, draft fieldbook, and editable/downloadable Skill Pack.
+- [x] Document modular research and audio boundaries, including Fish Audio's license gate.
