@@ -1,5 +1,12 @@
 # Fieldbook Session Log
 
+## 2026-08-01 - Human-plus-agent architecture adopted
+
+- Change: Removed the direct Fish Audio API route and key configuration. Fieldbook now exports a private Agent Handoff packet and Skill Pack; optional research, narration, and other tools run through approved MCP tools in the user’s chosen agent host.
+- Evidence: `AGENT_HANDOFF.md`, revised Fieldbook UI, and removal of `app/api/narrate/route.ts`.
+- Blocker: none.
+- Next: Test a real human-to-agent handoff with permitted source files and capture improvements from the first use.
+
 ## 2026-08-01 - Fish Audio evaluation adapter
 
 - Change: Added an optional Fish Audio TTS endpoint and fieldbook narration control. API keys remain server-side and the adapter is disabled by default, with an environment and UI non-commercial-use gate.

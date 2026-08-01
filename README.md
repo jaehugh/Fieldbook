@@ -38,8 +38,6 @@ Fieldbook adopts a minimal, broadly recognizable layout: YAML front matter, a pu
 
 See [architecture notes](docs/ARCHITECTURE.md) for pluggable research, persistence, and audio-provider design.
 
-## Fish Audio narration (evaluation only)
+## Human + agent operation
 
-Fieldbook includes an optional server-side Fish Audio TTS adapter. It is off by default. To enable local evaluation, copy `.env.example` to `.env.local`, set `FISH_AUDIO_ENABLED=true`, and add a Fish API key. The browser never receives the key. The adapter requires an in-product non-commercial confirmation and `FISH_AUDIO_NON_COMMERCIAL_ONLY=true`.
-
-Fish Audio's self-hosted materials are under its research license, which requires a separate written commercial license for commercial use. Do not enable this adapter for a commercial Fieldbook product, customer work, internal business use, or paid service without legal and provider approval. See [Fish Audio's license](https://github.com/fishaudio/fish-speech/blob/main/LICENSE) and [official TTS API](https://docs.fish.audio/api-reference/endpoint/openapi-v1/text-to-speech).
+Fieldbook is usable by a human alone, an agent alone with explicit source attachments, or both together. The app creates a private Agent Handoff packet and a portable `SKILL.md`; it does not embed provider keys or direct model integrations. Agent hosts can use their own approved MCP tools for optional research, narration, or other capabilities. See [Agent Handoff](AGENT_HANDOFF.md).
