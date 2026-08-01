@@ -1,5 +1,12 @@
 # Fieldbook Session Log
 
+## 2026-08-01 - MVP verified and private remote connected
+
+- Change: Verified the local production build and connected the project to private GitHub repository `jaehugh/Fieldbook`.
+- Evidence: `npm run build` completed; commit `28d9397` pushed to `origin/main`.
+- Blocker: none.
+- Next: Jae approves a private usability test and a production privacy/provider decision before adding persistence or inference.
+
 ## 2026-08-01 - Private MVP initialized
 
 - Change: Created the Fieldbook project, locally runnable web MVP, source-privacy boundaries, modular architecture notes, and installable Skill Pack export.
