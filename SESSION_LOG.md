@@ -1,5 +1,12 @@
 # Fieldbook Session Log
 
+## 2026-08-06 - Andrew Warner operating-system demo readiness
+
+- Change: Prepared a truthful meeting walkthrough across Trello, Notion, the canonical vault, Carbon Voice escalation, and Fieldbook.
+- Evidence: `2026-08-06 - Andrew Warner Meeting - AI Operating System Demo Brief.md`, the live Trello demo card, and the Notion meeting and Fieldbook pages.
+- Boundary: Fieldbook remains a local-first MVP with a public repository; it is not deployed and the first permitted usability test remains the next gate.
+- Next: Use Andrew's feedback to choose the narrowest valuable first test without expanding the privacy or provider boundary prematurely.
+
 ## 2026-08-01 - Immediate local Fieldbook output
 
 - Change: Corrected the browser experience after first-test feedback. "Build my Fieldbook" now immediately creates a private, source-grounded operating guide: project framing, recurring themes, attributable source excerpts, labeled assumptions, and a small first experiment.

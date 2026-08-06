@@ -9,6 +9,7 @@
 
 ## Completed
 
+- [x] Prepare the 2026-08-06 Andrew Warner meeting walkthrough across Trello, Notion, the canonical vault, Carbon Voice escalation, and Fieldbook.
 - [x] Create local MVP for source intake, project context, draft fieldbook, and editable/downloadable Skill Pack.
 - [x] Document modular research and audio boundaries, including Fish Audio's license gate.
 - [x] Create and connect the private GitHub repository.
